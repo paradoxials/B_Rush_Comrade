@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="time_schedule">
+        <item>6:30 am - 7:30 am</item>
+        <item>8:00 am - 9: 00 am</item>
+        <item>9:30 am - 10:30 am</item>
+        <item>11:00 am - 12:00 pm</item>
+        <item>1:30 pm - 2:30 pm</item>
+        <item>3:00 pm - 4:00 pm</item>
+        <item>4:30 pm - 5:30 pm</item>
+    </string-array>
+
+    <string-array name="bus_number">
+        <item>10ECF4</item>
+        <item>21ECF4</item>
+    </string-array>
+
+    <string-array name="bus_destination">
+        <item>SM to CIT-U</item>
+        <item>Emall to CIT-U</item>
+        <item>CIT-U to South</item>
+    </string-array>
+</resources>
