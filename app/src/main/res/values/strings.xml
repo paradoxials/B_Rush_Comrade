@@ -5,4 +5,9 @@
     <string name="close_navbar">Close Navigation Bar</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="Admin_Dashboard">Admin Dashboard</string>
+    <string name="route_1">Route 1</string>
+    <string name="Overview">Overview</string>
+    <string name="pdf_icon">PDF_icon</string>
+    <string name="excel_icon">Excel_icon</string>
 </resources>
