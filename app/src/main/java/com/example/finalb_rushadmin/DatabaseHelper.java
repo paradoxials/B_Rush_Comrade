@@ -153,39 +153,86 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
     public boolean insertUser(String fname, String mname, String lname, String add, String bday, String num, String user, String pass) {
         long personID = insertPerson(fname, mname, lname, add, bday, num);
-        if(personID == -1) { return false; }
-        else
-        {
+        if (personID == -1) {
+            return false;
+        } else {
             SQLiteDatabase db = this.getWritableDatabase();
             ContentValues value = new ContentValues();
             value.put(COLUMN_USERNAME, user);
             value.put(COLUMN_PASSWORD, pass);
             value.put(COLUMN_FK_PERSON, personID);
             long result = db.insert(TABLE_USER, null, value);
-            if(result == -1) { return false; }
-            else { return true; }
+            if (result == -1) {
+                return false;
+            } else {
+                return true;
+            }
         }
     }
     public boolean insertBusDriver(String fname, String mname, String lname, String add, String bday, String num) {
         long personID = insertPerson(fname, mname, lname, add, bday, num);
-        if(personID == -1) { return false; }
-        else
-        {
+        if (personID == -1) {
+            return false;
+        } else {
             SQLiteDatabase db = this.getWritableDatabase();
             ContentValues value = new ContentValues();
             value.put(COLUMN_FK_PERSON, personID);
             long result = db.insert(TABLE_DRIVER, null, value);
-            if(result == -1) { return false; }
-            else { return true; }
+            if (result == -1) { return false; } else { return true; }
         }
     }
-
-    //for reading the data in the DB
-    public Cursor getAllDriver()
-    {
+    //returns all rows in the table
+    public Cursor getListDrivers(){
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("SELECT * FROM "+TABLE_DRIVER, null);
         return res;
+    }
+    public Cursor getListUsers(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT * FROM "+TABLE_USER, null);
+        return res;
+    }
+    //returns a specific row in the database
+    public Cursor getPerson(long personID){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor person = db.rawQuery("SELECT * FROM "+TABLE_PERSON+" WHERE "+COLUMN_ID+" = "+personID, null);
+        if(person != null){ person.moveToFirst(); }
+        return person;
+    }
+    public Cursor getDriver(long driverID){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor driver = db.rawQuery("SELECT * FROM "+TABLE_DRIVER+" WHERE "+COLUMN_ID+" = "+driverID, null);
+        if(driver != null){ driver.moveToFirst(); }
+        return driver;
+    }
+    public Cursor getUser(long userID){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor user = db.rawQuery("SELECT * FROM "+TABLE_USER+" WHERE "+COLUMN_ID+" = "+userID, null);
+        if(user != null){ user.moveToFirst(); }
+        return user;
+    }
+    //updates a specific row in the database
+    private boolean updatePerson(String personID, String fname, String mname, String lname, String add, String bday, String num){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COLUMN_FNAME, fname);
+        contentValues.put(COLUMN_MNAME, mname);
+        contentValues.put(COLUMN_LNAME, lname);
+        contentValues.put(COLUMN_ADDRESS, add);
+        contentValues.put(COLUMN_BDAY, bday);
+        contentValues.put(COLUMN_CONTACT_NUM, num);
+        db.update(TABLE_PERSON, contentValues, "ID = ?", new String[] { personID });
+        return true;
+    }
+    public boolean updateDriver(String personID, String fname, String mname, String lname, String add, String bday, String num){
+        boolean flag = updatePerson(personID, fname, mname, lname, add, bday, num);
+        if(flag){ return true; }
+        else { return false; }
+    }
+    public boolean updateUser(String personID, String fname, String mname, String lname, String add, String bday, String num){
+        boolean flag = updatePerson(personID, fname, mname, lname, add, bday, num);
+        if(flag){ return true; }
+        else { return false; }
     }
    /* public Cursor getAllData() {
         SQLiteDatabase db = this.getWritableDatabase();
