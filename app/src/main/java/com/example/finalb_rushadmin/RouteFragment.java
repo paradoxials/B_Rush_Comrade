@@ -14,7 +14,6 @@ import androidx.fragment.app.Fragment;
 
 public class RouteFragment extends Fragment{
     private Button b1;
-    private ImageView imgUp, imgDel;
     private DatabaseHelper databaseHelper;
 
     @Nullable
@@ -31,28 +30,10 @@ public class RouteFragment extends Fragment{
                 startActivity(intent);
             }
         });
-
-        imgUp = v.findViewById(R.id.imgUpdateRoute);
-        imgUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), UpdateRoute.class);
-                startActivity(intent);
-            }
-        });
-
-        imgDel = v.findViewById(R.id.imgDeleteRoute);
-        imgDel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), DeleteRoute.class);
-                startActivity(intent);
-            }
-        });
         return v;
     }
 
-    public void initializeDatabase()
+    private void initializeDatabase()
     {
         if(databaseHelper == null)
         {
