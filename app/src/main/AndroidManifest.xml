@@ -41,7 +41,7 @@
             android:name=".AddRoute"
             android:theme="@style/Theme.FinalBrushAdmin.NoActionBar" />
         <activity
-            android:name=".MainActivity"
+            android:name=".NavDashboard"
             android:theme="@style/Theme.FinalBrushAdmin.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
