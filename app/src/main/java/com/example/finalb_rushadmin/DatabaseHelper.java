@@ -322,6 +322,38 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         else { return false; }
     }
+    private boolean deleteDestination(String routeID){
+        SQLiteDatabase db = this.getWritableDatabase();
+        long res = db.delete(TABLE_BUS_STOP, "ID = ?", new String[] { routeID });
+        if(res == -1){ return false; }
+        else{ return true; }
+    }
+    private boolean deleteBus(String busID){
+        SQLiteDatabase db = this.getWritableDatabase();
+        long bus_id = Long.parseLong(busID);
+        Cursor cursor = getBus(bus_id);
+        long tempID = cursor.getLong(cursor.getColumnIndex("RouteID"));
+        String routeID = String.valueOf(tempID);
+        boolean flag = deleteDestination(routeID);
+        if(flag){
+            db.delete(TABLE_BUS, "ID = ?", new String[]{ busID });
+            return true;
+        }
+        else{ return false; }
+    }
+    public boolean deleteBusSched(String ID){
+        SQLiteDatabase db = this.getWritableDatabase();
+        long schedID = Long.parseLong(ID);
+        Cursor cursor = getBusSched(schedID);
+        long tempID = cursor.getLong(cursor.getColumnIndex("BusID"));
+        String busID = String.valueOf(tempID);
+        boolean flag = deleteBus(busID);
+        if(flag){
+            db.delete(TABLE_BUS_SCHEDULE, "ID = ?", new String[]{ ID });
+            return true;
+        }
+        else{ return false; }
+    }
     //checks admin login
     public boolean adminAccountExists(String username, String password){
         SQLiteDatabase db = this.getReadableDatabase();
