@@ -30,46 +30,46 @@ public class AdminDashboardFragment extends Fragment {
 
     BarChart mpBarChart;
 
+    @Nullable
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_admin_dashboard, container, false);
 
-        super.onCreate(savedInstanceState);
-        mpBarChart = v.findViewById(R.id.mp_groupBarChart);
-        BarDataSet barDataSet1 = new BarDataSet(barEntries1(), "Morning Trip");
-        barDataSet1.setColor(Color.rgb(184,75,17));
-        BarDataSet barDataSet2 = new BarDataSet(barEntries2(), "Noon Trip");
-        barDataSet2.setColor(Color.rgb(76,175,80));
-        BarDataSet barDataSet3 = new BarDataSet(barEntries3(), "Evening Trip");
-        barDataSet3.setColor(Color.rgb(0,150,136));
-
-
-        BarData data = new BarData(barDataSet1, barDataSet2, barDataSet3);
-        mpBarChart.setData(data);
-
-        String[] days = new String[]{"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
-        XAxis xAxis = mpBarChart.getXAxis();
-        xAxis.setValueFormatter(new IndexAxisValueFormatter(days));
-        xAxis.setCenterAxisLabels(true);
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setGranularity(1);
-        xAxis.setGranularityEnabled(true);
-
-        mpBarChart.setDragEnabled(true);
-        mpBarChart.setVisibleXRangeMaximum(3);
-
-        float barSpace = 0.08f;
-        float groupSpace = 0.16f;
-        data.setBarWidth(0.20f);
-
-        mpBarChart.getXAxis().setAxisMinimum(0);
-        mpBarChart.getXAxis().setAxisMaximum(0+mpBarChart.getData().getGroupWidth(groupSpace, barSpace)*7);
-        mpBarChart.getAxisLeft().setAxisMinimum(0);
-
-        mpBarChart.groupBars( 0, groupSpace, barSpace);
-
-        mpBarChart.invalidate();
-
-
+        //super.onCreate(savedInstanceState);
+//        mpBarChart = v.findViewById(R.id.mp_groupBarChart);
+//        BarDataSet barDataSet1 = new BarDataSet(barEntries1(), "Morning Trip");
+//        barDataSet1.setColor(Color.rgb(184,75,17));
+//        BarDataSet barDataSet2 = new BarDataSet(barEntries2(), "Noon Trip");
+//        barDataSet2.setColor(Color.rgb(76,175,80));
+//        BarDataSet barDataSet3 = new BarDataSet(barEntries3(), "Evening Trip");
+//        barDataSet3.setColor(Color.rgb(0,150,136));
+//
+//
+//        BarData data = new BarData(barDataSet1, barDataSet2, barDataSet3);
+//        mpBarChart.setData(data);
+//
+//        String[] days = new String[]{"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+//        XAxis xAxis = mpBarChart.getXAxis();
+//        xAxis.setValueFormatter(new IndexAxisValueFormatter(days));
+//        xAxis.setCenterAxisLabels(true);
+//        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+//        xAxis.setGranularity(1);
+//        xAxis.setGranularityEnabled(true);
+//
+//        mpBarChart.setDragEnabled(true);
+//        mpBarChart.setVisibleXRangeMaximum(3);
+//
+//        float barSpace = 0.08f;
+//        float groupSpace = 0.16f;
+//        data.setBarWidth(0.20f);
+//
+//        mpBarChart.getXAxis().setAxisMinimum(0);
+//        mpBarChart.getXAxis().setAxisMaximum(0+mpBarChart.getData().getGroupWidth(groupSpace, barSpace)*7);
+//        mpBarChart.getAxisLeft().setAxisMinimum(0);
+//
+//        mpBarChart.groupBars( 0, groupSpace, barSpace);
+//
+//        mpBarChart.invalidate();
 
         return v;
     }

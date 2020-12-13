@@ -74,7 +74,6 @@
         android:background="@drawable/input_textbox"
         android:ems="10"
         android:hint="DD/MM/YYYY"
-        android:inputType="date"
         android:padding="5sp"
         android:paddingStart="20sp"
         android:textSize="16sp"
