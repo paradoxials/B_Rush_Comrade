@@ -172,12 +172,13 @@
             android:translationY="75dp">
 
             <Button
-                android:clickable="true"
+                android:id="@+id/BookTicket"
                 android:layout_width="300dp"
                 android:layout_height="50dp"
-                android:theme="@style/Button.orange"
                 android:background="@drawable/orange_something_button"
-                android:text="Book Ticket" />
+                android:clickable="true"
+                android:text="Book Ticket"
+                android:theme="@style/Button.orange" />
 
         </LinearLayout>
 
