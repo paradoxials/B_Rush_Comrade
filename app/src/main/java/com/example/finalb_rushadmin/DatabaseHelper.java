@@ -382,4 +382,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
         return list;
     }
+    public Cursor LoginGcash() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("select * from "+TABLE_GCASH,null);
+        if(res!= null){res.moveToFirst();}
+        return res;
+    }
+    public boolean insertGcashRef(String Ref) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COLUMN_REFERENCE_NUMBER, Ref);
+        long result = db.insert(TABLE_GCASH,null ,contentValues);
+        if(result == -1)
+            return false;
+        else
+            return true;
+        //aaa
+    }
 }
