@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/gradient_background"
-    tools:context=".UpdateDriver">
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@drawable/gradient_background" tools:context=".UpdateDriver">
     <androidx.appcompat.widget.Toolbar
         android:layout_width="412dp"
         android:layout_height="45dp"
@@ -22,164 +19,224 @@
             android:layout_marginTop="9dp"
             android:src="@drawable/ic_arrow" />
     </androidx.appcompat.widget.Toolbar>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center_horizontal"
-            android:text="Add New Bus Driver"
-            android:textColor="#000000"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:translationY="50dp" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+        android:text="Add New Bus Driver"
+        android:textColor="#000000"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:translationY="50dp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="40dp"
-            android:text="First Name"
-            android:textColor="#000000"
-            android:textSize="16sp"
-            android:translationY="55dp" />
-
-        <EditText
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:text="First Name"
+        android:textColor="#000000"
+        android:textSize="16sp"
+        android:translationY="55dp" />
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/driverFName"
             android:layout_width="350dp"
             android:layout_height="50dp"
             android:layout_gravity="center_horizontal"
             android:background="@drawable/input_textbox"
-            android:ems="10"
             android:hint="Enter First Name"
-            android:inputType="textPersonName"
             android:padding="5sp"
             android:paddingStart="20sp"
             android:textSize="16sp"
-            android:translationY="60dp" />
+            android:translationY="60dp"/>
+<!--    <EditText-->
+<!--        android:id="@+id/updatedDriverFName"-->
+<!--        android:layout_width="350dp"-->
+<!--        android:layout_height="50dp"-->
+<!--        android:layout_gravity="center_horizontal"-->
+<!--        android:background="@drawable/input_textbox"-->
+<!--        android:ems="10"-->
+<!--        android:hint="Enter First Name"-->
+<!--        android:inputType="textPersonName"-->
+<!--        android:padding="5sp"-->
+<!--        android:paddingStart="20sp"-->
+<!--        android:textSize="16sp"-->
+<!--        android:translationY="60dp" />-->
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="40dp"
-            android:text="Middle Name"
-            android:textColor="#000000"
-            android:textSize="16sp"
-            android:translationY="70dp" />
-
-        <EditText
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:text="Middle Name"
+        android:textColor="#000000"
+        android:textSize="16sp"
+        android:translationY="70dp" />
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/driverMName"
             android:layout_width="350dp"
             android:layout_height="50dp"
             android:layout_gravity="center_horizontal"
             android:background="@drawable/input_textbox"
-            android:ems="10"
-            android:hint="Enter Middle Name (optional)"
-            android:inputType="textPersonName"
+            android:hint="Enter Middle Name (Optional)"
             android:padding="5sp"
             android:paddingStart="20sp"
             android:textSize="16sp"
-            android:translationY="75dp" />
+            android:translationY="75dp"/>
+<!--    <EditText-->
+<!--        android:id="@+id/updatedDriverMName"-->
+<!--        android:layout_width="350dp"-->
+<!--        android:layout_height="50dp"-->
+<!--        android:layout_gravity="center_horizontal"-->
+<!--        android:background="@drawable/input_textbox"-->
+<!--        android:ems="10"-->
+<!--        android:hint="Enter Middle Name (optional)"-->
+<!--        android:inputType="textPersonName"-->
+<!--        android:padding="5sp"-->
+<!--        android:paddingStart="20sp"-->
+<!--        android:textSize="16sp"-->
+<!--        android:translationY="75dp" />-->
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="40dp"
-            android:text="Last Name"
-            android:textColor="#000000"
-            android:textSize="16sp"
-            android:translationY="85dp" />
-
-        <EditText
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:text="Last Name"
+        android:textColor="#000000"
+        android:textSize="16sp"
+        android:translationY="85dp" />
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/driverLName"
             android:layout_width="350dp"
             android:layout_height="50dp"
             android:layout_gravity="center_horizontal"
             android:background="@drawable/input_textbox"
-            android:ems="10"
             android:hint="Enter Last Name"
-            android:inputType="textPersonName"
             android:padding="5sp"
             android:paddingStart="20sp"
             android:textSize="16sp"
-            android:translationY="90dp" />
+            android:translationY="90dp"/>
+<!--    <EditText-->
+<!--        android:id="@+id/updatedDriverLName"-->
+<!--        android:layout_width="350dp"-->
+<!--        android:layout_height="50dp"-->
+<!--        android:layout_gravity="center_horizontal"-->
+<!--        android:background="@drawable/input_textbox"-->
+<!--        android:ems="10"-->
+<!--        android:hint="Enter Last Name"-->
+<!--        android:inputType="textPersonName"-->
+<!--        android:padding="5sp"-->
+<!--        android:paddingStart="20sp"-->
+<!--        android:textSize="16sp"-->
+<!--        android:translationY="90dp" />-->
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="40dp"
-            android:text="Address"
-            android:textColor="#000000"
-            android:textSize="16sp"
-            android:translationY="100dp" />
-
-        <EditText
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:text="Address"
+        android:textColor="#000000"
+        android:textSize="16sp"
+        android:translationY="100dp" />
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/driverAddress"
             android:layout_width="350dp"
             android:layout_height="50dp"
             android:layout_gravity="center_horizontal"
             android:background="@drawable/input_textbox"
-            android:ems="10"
             android:hint="Enter Address"
-            android:inputType="textPersonName"
             android:padding="5sp"
             android:paddingStart="20sp"
             android:textSize="16sp"
-            android:translationY="105dp" />
+            android:translationY="105dp"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="40dp"
-            android:text="Birthdate"
-            android:textColor="#000000"
-            android:textSize="16sp"
-            android:translationY="115dp" />
+<!--    <EditText-->
+<!--        android:id="@+id/updatedDriverAddress"-->
+<!--        android:layout_width="350dp"-->
+<!--        android:layout_height="50dp"-->
+<!--        android:layout_gravity="center_horizontal"-->
+<!--        android:background="@drawable/input_textbox"-->
+<!--        android:ems="10"-->
+<!--        android:hint="Enter Address"-->
+<!--        android:inputType="textPersonName"-->
+<!--        android:padding="5sp"-->
+<!--        android:paddingStart="20sp"-->
+<!--        android:textSize="16sp"-->
+<!--        android:translationY="105dp" />-->
 
-        <EditText
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:text="Birthdate"
+        android:textColor="#000000"
+        android:textSize="16sp"
+        android:translationY="115dp" />
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/driverBday"
             android:layout_width="350dp"
             android:layout_height="50dp"
             android:layout_gravity="center_horizontal"
             android:background="@drawable/input_textbox"
-            android:ems="10"
             android:hint="DD/MM/YYYY"
-            android:inputType="date"
             android:padding="5sp"
             android:paddingStart="20sp"
             android:textSize="16sp"
-            android:translationY="120dp" />
+            android:translationY="120dp"/>
+<!--    <EditText-->
+<!--        android:id="@+id/updatedDriverBday"-->
+<!--        android:layout_width="350dp"-->
+<!--        android:layout_height="50dp"-->
+<!--        android:layout_gravity="center_horizontal"-->
+<!--        android:background="@drawable/input_textbox"-->
+<!--        android:ems="10"-->
+<!--        android:hint="Enter Birthday"-->
+<!--        android:inputType="date"-->
+<!--        android:padding="5sp"-->
+<!--        android:paddingStart="20sp"-->
+<!--        android:textSize="16sp"-->
+<!--        android:translationY="120dp" />-->
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="40dp"
-            android:elevation="4dp"
-            android:text="Contact Number"
-            android:textColor="#000000"
-            android:textSize="16sp"
-            android:translationY="130dp" />
-
-        <EditText
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:elevation="4dp"
+        android:text="Contact Number"
+        android:textColor="#000000"
+        android:textSize="16sp"
+        android:translationY="130dp" />
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/driverContactNum"
             android:layout_width="350dp"
             android:layout_height="50dp"
             android:layout_gravity="center_horizontal"
             android:background="@drawable/input_textbox"
-            android:elevation="4dp"
-            android:ems="10"
-            android:hint="Enter Contact Number"
-            android:maxLength="11"
+            android:hint="Enter Last Name"
             android:inputType="number"
+            android:maxLength="11"
             android:padding="5sp"
             android:paddingStart="20sp"
             android:textSize="16sp"
-            android:translationY="135dp" />
-
+            android:translationY="135dp"/>
+<!--    <EditText-->
+<!--        android:id="@+id/updatedDriverContactNum"-->
+<!--        android:layout_width="350dp"-->
+<!--        android:layout_height="50dp"-->
+<!--        android:layout_gravity="center_horizontal"-->
+<!--        android:background="@drawable/input_textbox"-->
+<!--        android:elevation="4dp"-->
+<!--        android:ems="10"-->
+<!--        android:hint="Enter Contact Number"-->
+<!--        android:inputType="number"-->
+<!--        android:padding="5sp"-->
+<!--        android:paddingStart="20sp"-->
+<!--        android:textSize="16sp"-->
+<!--        android:translationY="135dp" />-->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"

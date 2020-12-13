@@ -8,10 +8,11 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "B-rushDatabase.db";
-    private static int DB_VERSION = 1;
+    private static int DB_VERSION = 5;
 
     //list of tables in B-rush database
     private static final String TABLE_PERSON = "Person";
@@ -26,7 +27,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TABLE_PAYMENT = "Payment";
     private static final String  TABLE_TICKET = "Ticket" ;
 
-    //columm list of all foreign keys
+    //column list of all foreign keys
     private static final String COLUMN_FK_PERSON = "PersonID";
     private static final String COLUMN_FK_DRIVER = "DriverID";
     private static final String COLUMN_FK_ROUTE = "RouteID";
@@ -77,7 +78,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     //Strings to create the tables
     private static final String CREATE_TABLE_PERSON ="CREATE TABLE "+TABLE_PERSON+"("+COLUMN_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, " +COLUMN_FNAME+" TEXT, "
-            +COLUMN_MNAME+" TEXT, "+COLUMN_LNAME+" TEXT, "+COLUMN_ADDRESS+" TEXT, "+COLUMN_BDAY+" NUMERIC, "+COLUMN_CONTACT_NUM+"TEXT)";
+            +COLUMN_MNAME+" TEXT, "+COLUMN_LNAME+" TEXT, "+COLUMN_ADDRESS+" TEXT, "+COLUMN_BDAY+" NUMERIC, "+COLUMN_CONTACT_NUM+" TEXT)";
     private static final String CREATE_TABLE_DRIVER = "CREATE TABLE "+TABLE_DRIVER+" ("+COLUMN_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+COLUMN_FK_PERSON+
             " INTEGER,FOREIGN KEY("+COLUMN_FK_PERSON+") REFERENCES "+TABLE_PERSON+"("+COLUMN_ID+"))";
     private static final String CREATE_TABLE_USER = "CREATE TABLE "+TABLE_USER+" ("+COLUMN_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "+COLUMN_USERNAME+
@@ -85,22 +86,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String CREATE_TABLE_ADMIN ="CREATE TABLE "+TABLE_ADMIN+"("+COLUMN_ID+"	INTEGER PRIMARY KEY AUTOINCREMENT,"+COLUMN_FK_PERSON+
             " INTEGER,"+COLUMN_USERNAME+"	TEXT,"+COLUMN_PASSWORD+"	TEXT,FOREIGN KEY("+COLUMN_FK_PERSON+") REFERENCES "+TABLE_PERSON+"("+COLUMN_ID+"))";
     public static final String CREATE_TABLE_BUS ="CREATE TABLE "+TABLE_BUS+" ("+COLUMN_ID+"	INTEGER PRIMARY KEY AUTOINCREMENT,"+COLUMN_FK_DRIVER+
-            "	INTEGER ,"+COLUMN_FK_ROUTE+" INTEGER, "+COLUMN_PLATE_NUMBER+"INTEGER , FOREIGN KEY("+COLUMN_FK_ROUTE+") REFERENCES "+TABLE_BUS_STOP+
+            "	INTEGER ,"+COLUMN_FK_ROUTE+" INTEGER, "+COLUMN_PLATE_NUMBER+" TEXT , FOREIGN KEY("+COLUMN_FK_ROUTE+") REFERENCES "+TABLE_BUS_STOP+
             "("+COLUMN_ID+") , FOREIGN KEY("+COLUMN_FK_DRIVER+") REFERENCES "+TABLE_DRIVER+"("+COLUMN_ID+"))";
     public static final String CREATE_TABLE_BUS_SCHEDULE =" CREATE TABLE "+TABLE_BUS_SCHEDULE+ "( "+COLUMN_ID+" INTEGER PRIMARY KEY AUTOINCREMENT,"
             +COLUMN_TIME+" INTEGER, "+COLUMN_FK_ROUTE+" INTEGER ,FOREIGN KEY("+COLUMN_FK_ROUTE+" )REFERENCES "+TABLE_BUS_STOP+"("+COLUMN_ID+"))";
     public static final String CREATE_TABLE_BUS_SEAT="CREATE TABLE "+TABLE_BUS_SEAT+"("+COLUMN_ID+" INTEGER PRIMARY KEY AUTOINCREMENT,"+COLUMN_SEAT_NUMBER+
             "INTEGER,"+COLUMN_STATUS+"TEXT)";
     public static final String CREATE_TABLE_BUS_STOP = "CREATE TABLE "+TABLE_BUS_STOP+"("+COLUMN_ID+" INTEGER PRIMARY KEY AUTOINCREMENT,"
-            +COLUMN_DESTINATION+"TEXT)";
+            +COLUMN_DESTINATION+" TEXT)";
     public static final String CREATE_TABLE_GCASH = "CREATE TABLE "+TABLE_GCASH+" ("+COLUMN_ID+"	INTEGER PRIMARY KEY AUTOINCREMENT,"
-            +COLUMN_PHONE_NUMBER+ "INTEGER,"+COLUMN_REFERENCE_NUMBER+"INTEGER)";
+            +COLUMN_PHONE_NUMBER+ " INTEGER,"+COLUMN_REFERENCE_NUMBER+" INTEGER)";
     public static final String CREATE_TABLE_PAYMENT ="CREATE TABLE "+TABLE_PAYMENT+" ("+COLUMN_ID+"	INTEGER PRIMARY KEY AUTOINCREMENT,"+COLUMN_AMOUNT+"	INTEGER)";
     public static final String CREATE_TABLE_TICKET = "CREATE TABLE "+TABLE_TICKET+" ("+COLUMN_ID+"	INTEGER PRIMARY KEY AUTOINCREMENT,"+COLUMN_FK_USER+" INTEGER,"
-            +COLUMN_FK_PAYMENT+" INTEGER,"+COLUMN_FK_SEAT+"	INTEGER,"+COLUMN_SEAT_NUMBER+"INTEGER,"+COLUMN_STATUS+"	TEXT,"+COLUMN_ISCANCELLED+"	Boolean," +
+            +COLUMN_FK_PAYMENT+" INTEGER,"+COLUMN_FK_SEAT+"	INTEGER,"+COLUMN_SEAT_NUMBER+" INTEGER,"+COLUMN_STATUS+"	TEXT,"+COLUMN_ISCANCELLED+"	Boolean," +
             "FOREIGN KEY("+COLUMN_FK_PAYMENT+") REFERENCES "+TABLE_PAYMENT+"("+COLUMN_ID+"),FOREIGN KEY("+COLUMN_FK_USER+") REFERENCES "+TABLE_USER+
             "("+COLUMN_ID+"),FOREIGN KEY("+COLUMN_FK_SEAT+") REFERENCES " +TABLE_BUS_SEAT+ " ("+COLUMN_ID+"))";
-    private Object SQLiteException;
 
     //methods to use in order to connect to the Database
     public DatabaseHelper(Context context) {
@@ -139,7 +139,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     //inserting new data row
-    private long insertPerson(String fname, String mname, String lname, String add, String bday, String num) {
+    private long insertPerson(String fname, String mname, String lname, String add, String bday, String num){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_FNAME, fname);
@@ -181,6 +181,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             if (result == -1) { return false; } else { return true; }
         }
     }
+    private long insertBusStop(String destination){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COLUMN_DESTINATION, destination);
+        long res = db.insert(TABLE_BUS_STOP, null, contentValues);
+        return res;
+    }
+//    public boolean insertBus(long driverID, String destination, String plateNumber){
+//        long routeID = insertBusStop(destination);
+//        if(routeID == -1){ return false; }
+//        else{
+//            SQLiteDatabase db = this.getWritableDatabase();
+//            ContentValues values = new ContentValues();
+//            values.put(COLUMN_FK_DRIVER, driverID);
+//            values.put(COLUMN_FK_ROUTE, routeID);
+//            values.put(COLUMN_PLATE_NUMBER, plateNumber);
+//
+//        }
+//    }
     //returns all rows in the table
     public Cursor getListDrivers(){
         SQLiteDatabase db = this.getWritableDatabase();
@@ -234,26 +253,65 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if(flag){ return true; }
         else { return false; }
     }
-   /* public Cursor getAllData() {
+    //deletes a specific row in table
+    private boolean deletePerson(String personID){
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("select * from "+TABLE_NAME,null);
-        return res;
+        long res = db.delete(TABLE_PERSON, "ID = ?", new String[] { personID });
+        if(res == -1){ return false; }
+        else{ return true; }
     }
-
-    public boolean updateData(String id,String name,String surname,String marks) {
+    public boolean deleteDriver(String ID){
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(COL_1,id);
-        contentValues.put(COL_2,name);
-        contentValues.put(COL_3,surname);
-        contentValues.put(COL_4,marks);
-        db.update(TABLE_NAME, contentValues, "ID = ?",new String[] { id });
-        return true;
+        long driverID = Long.parseLong(ID);
+        Cursor cursor = getDriver(driverID);
+        long tempID = cursor.getLong(cursor.getColumnIndex("PersonID"));
+        String personID = String.valueOf(tempID);
+        boolean flag = deletePerson(personID);
+        if(flag){
+            db.delete(TABLE_DRIVER, "ID = ?", new String[] { ID });
+            return true;
+        }
+        else { return false; }
     }
-
-    public Integer deleteData (String id) {
+    public boolean deleteUser(String ID){
         SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete(TABLE_NAME, "ID = ?",new String[] {id});
-    }*/
-
+        long userID = Long.parseLong(ID);
+        Cursor cursor = getUser(userID);
+        long tempID = cursor.getLong(cursor.getColumnIndex("PersonID"));
+        String personID = String.valueOf(tempID);
+        boolean flag = deletePerson(personID);
+        if(flag){
+            db.delete(TABLE_USER, "ID = ?", new String[] { ID });
+            return true;
+        }
+        else { return false; }
+    }
+    //checks admin login
+    public boolean adminAccountExists(String username, String password){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM "+TABLE_ADMIN+" WHERE Username = ? AND Password = ?", new String[]{ username, password });
+        if(cursor.getCount() > 0){ return true; }
+        else{ return false; }
+    }
+    //get the List of Drivers for Spinner
+    public ArrayList<String> getDriverList(){
+        ArrayList<String> list = new ArrayList<String>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        db.beginTransaction();
+        Cursor cursor = db.rawQuery("SELECT * FROM "+TABLE_DRIVER, null);
+        if(cursor.getCount() > 0){
+            while(cursor.moveToNext()){
+                long personID = cursor.getLong(cursor.getColumnIndex("PersonID"));
+                String ID = String.valueOf(personID);
+                Cursor person = getPerson(personID);
+                String name = ID+"-"+person.getString(person.getColumnIndex("FirstName"))+" "+
+                        person.getString(person.getColumnIndex("LastName"));
+                list.add(name);
+            }
+        }
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        db.close();
+        return list;
+    }
 }
