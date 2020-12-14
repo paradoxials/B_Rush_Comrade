@@ -47,8 +47,7 @@
             android:theme="@style/Theme.FinalBrushAdmin.NoActionBar" />
         <activity
             android:name=".NavDashboard"
-            android:theme="@style/Theme.FinalBrushAdmin.NoActionBar">
-        </activity>
+            android:theme="@style/Theme.FinalBrushAdmin.NoActionBar"/>
         <activity
             android:name=".AdminLogin"
             android:theme="@style/Theme.FinalBrushAdmin.NoActionBar">
