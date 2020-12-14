@@ -48,12 +48,17 @@
         <activity
             android:name=".NavDashboard"
             android:theme="@style/Theme.FinalBrushAdmin.NoActionBar">
+        </activity>
+        <activity
+            android:name=".AdminLogin"
+            android:theme="@style/Theme.FinalBrushAdmin.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>

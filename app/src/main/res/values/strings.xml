@@ -10,4 +10,8 @@
     <string name="Overview">Overview</string>
     <string name="pdf_icon">PDF_icon</string>
     <string name="excel_icon">Excel_icon</string>
+    <string name="text_username">Username</string>
+    <string name="text_password">Password</string>
+    <string name="text_forgot">FORGOT PASSWORD</string>
+    <string name="button_login">LOGIN</string>
 </resources>
