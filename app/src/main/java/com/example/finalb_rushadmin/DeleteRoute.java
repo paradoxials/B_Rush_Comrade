@@ -1,6 +1,8 @@
 package com.example.finalb_rushadmin;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
 import android.view.View;
@@ -39,7 +41,12 @@ public class DeleteRoute extends AppCompatActivity {
                 if(accountExists){
                     //Toast.makeText(DeleteDriver.this, "Account exists", Toast.LENGTH_SHORT).show();
                     boolean isDeleted = databaseHelper.deleteBusSched(schedID);
-                    if(isDeleted){ Toast.makeText(DeleteRoute.this, "Data has been deleted", Toast.LENGTH_SHORT).show();}
+                    if(isDeleted){
+                        RouteFragment routeFragment = new RouteFragment();
+                        FragmentManager fragmentManager = getSupportFragmentManager();
+                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                        fragmentTransaction.add(R.id.layout, routeFragment).addToBackStack(null).commit();
+                    }
                     else{ Toast.makeText(DeleteRoute.this, "Failed to delete data", Toast.LENGTH_SHORT).show(); }
                 }
                 else {Toast.makeText(DeleteRoute.this, "Account does not exists", Toast.LENGTH_SHORT).show();}

@@ -1,6 +1,8 @@
 package com.example.finalb_rushadmin;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
 import android.view.View;
@@ -38,7 +40,12 @@ public class DeleteDriver extends AppCompatActivity {
                 if(accountExists){
                     //Toast.makeText(DeleteDriver.this, "Account exists", Toast.LENGTH_SHORT).show();
                     boolean isDeleted = databaseHelper.deleteDriver(driverID);
-                    if(isDeleted){ Toast.makeText(DeleteDriver.this, "Data has been deleted", Toast.LENGTH_SHORT).show();}
+                    if(isDeleted){
+                        DriverFragment driverFragment = new DriverFragment();
+                        FragmentManager fragmentManager = getSupportFragmentManager();
+                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                        fragmentTransaction.add(R.id.layout, driverFragment).addToBackStack(null).commit();
+                    }
                     else{ Toast.makeText(DeleteDriver.this, "Failed to delete data", Toast.LENGTH_SHORT).show(); }
                 }
                 else {Toast.makeText(DeleteDriver.this, "Account does not exists", Toast.LENGTH_SHORT).show();}
