@@ -166,6 +166,7 @@
             android:layout_height="50dp"
             android:layout_gravity="center_horizontal"
             android:background="@drawable/input_textbox"
+            android:maxLength="11"
             android:elevation="4dp"
             android:ems="10"
             android:hint="Enter Contact Number"

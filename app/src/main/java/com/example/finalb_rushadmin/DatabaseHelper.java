@@ -266,6 +266,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if(sched != null){ sched.moveToFirst(); }
         return sched;
     }
+    public Cursor getAdmin(String username, String password){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor admin = db.rawQuery("SELECT * FROM "+TABLE_ADMIN+" WHERE Username = ? AND Password = ?", new String[]{ username, password });
+        if(admin != null){ admin.moveToFirst(); }
+        return admin;
+    }
     //updates a specific row in the database
     private boolean updatePerson(String personID, String fname, String mname, String lname, String add, String bday, String num){
         SQLiteDatabase db = this.getWritableDatabase();

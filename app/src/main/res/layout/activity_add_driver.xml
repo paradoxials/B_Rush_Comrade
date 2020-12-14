@@ -232,6 +232,7 @@
         android:ems="10"
         android:hint="Enter Contact Number"
         android:inputType="number"
+        android:maxLength="11"
         android:padding="5sp"
         android:paddingStart="20sp"
         android:textSize="16sp"
