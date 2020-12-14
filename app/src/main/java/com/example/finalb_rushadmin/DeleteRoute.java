@@ -13,7 +13,7 @@ import android.widget.Toast;
 public class DeleteRoute extends AppCompatActivity {
     private DatabaseHelper databaseHelper;
     private EditText username, password;
-    private Button submit;
+    private Button submit, cancel;
     private String schedID;
 
     @Override
@@ -30,6 +30,16 @@ public class DeleteRoute extends AppCompatActivity {
         username = (EditText) findViewById(R.id.getEmailRoute);
         password = (EditText) findViewById(R.id.getPassRoute);
         submit = (Button) findViewById(R.id.deleteRoute);
+        cancel = (Button) findViewById(R.id.cancelDeleteDriver);
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RouteFragment routeFragment = new RouteFragment();
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.add(R.id.layout, routeFragment).addToBackStack(null).commit();
+            }
+        });
         deleteRoute();
     }
 
