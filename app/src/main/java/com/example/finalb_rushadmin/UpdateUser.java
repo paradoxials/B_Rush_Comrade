@@ -110,7 +110,12 @@ public class UpdateUser extends AppCompatActivity {
                 String id = String.valueOf(personID);
                 boolean isUpdated = databaseHelper.updateUser(id, fname.getText().toString(), mname.getText().toString(), lname.getText().toString(),
                         add.getText().toString(), bday.getText().toString(), contact.getText().toString());
-                if(isUpdated){ Toast.makeText(UpdateUser.this, "Data has been updated", Toast.LENGTH_SHORT).show();}
+                if(isUpdated){
+                    UserFragment userFragment = new UserFragment();
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.add(R.id.layout, userFragment).addToBackStack(null).commit();
+                }
                 else{ Toast.makeText(UpdateUser.this, "Failed to update data", Toast.LENGTH_SHORT).show(); }
             }
         });
