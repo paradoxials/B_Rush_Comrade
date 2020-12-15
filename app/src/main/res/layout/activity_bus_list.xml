@@ -112,7 +112,7 @@
         android:translationY="275dp">
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/TicketName"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="Destination: Minglanilla"

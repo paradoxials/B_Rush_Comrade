@@ -7,7 +7,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
@@ -34,6 +37,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_FK_SEAT = "SeatID";
     private static final String COLUMN_FK_USER = "UserID";
     private static final String COLUMN_FK_PAYMENT = "PaymentID";
+    private static final String COLUMN_FK_BUS = "BusID";
+    private static final String COLUMN_FK_SCHEDULE = "ScheduleID";
 
     //list of common columns for all table
     private static final String COLUMN_ID = "ID";
@@ -75,6 +80,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     //private static final String COLUMN_SEAT_NUMBER = "Seat Number";
     // private static final String COLUMN_STATUS = "Status";
     private static final String COLUMN_ISCANCELLED = "IsCancelled";
+    private static final String COLUMN_DATE = "Date";
+
 
     //Strings to create the tables
     private static final String CREATE_TABLE_PERSON ="CREATE TABLE "+TABLE_PERSON+"("+COLUMN_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, " +COLUMN_FNAME+" TEXT, "
@@ -97,10 +104,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String CREATE_TABLE_GCASH = "CREATE TABLE "+TABLE_GCASH+" ("+COLUMN_ID+"	INTEGER PRIMARY KEY AUTOINCREMENT,"
             +COLUMN_PHONE_NUMBER+ " INTEGER,"+COLUMN_REFERENCE_NUMBER+" INTEGER)";
     public static final String CREATE_TABLE_PAYMENT ="CREATE TABLE "+TABLE_PAYMENT+" ("+COLUMN_ID+"	INTEGER PRIMARY KEY AUTOINCREMENT,"+COLUMN_AMOUNT+"	INTEGER)";
-    public static final String CREATE_TABLE_TICKET = "CREATE TABLE "+TABLE_TICKET+" ("+COLUMN_ID+"	INTEGER PRIMARY KEY AUTOINCREMENT,"+COLUMN_FK_USER+" INTEGER,"
-            +COLUMN_FK_PAYMENT+" INTEGER,"+COLUMN_FK_SEAT+"	INTEGER,"+COLUMN_SEAT_NUMBER+" INTEGER,"+COLUMN_STATUS+"	TEXT,"+COLUMN_ISCANCELLED+"	Boolean," +
+    public static final String CREATE_TABLE_TICKET = "CREATE TABLE "+TABLE_TICKET+" ("+COLUMN_ID+"	INTEGER PRIMARY KEY AUTOINCREMENT,"+COLUMN_DATE+" TEXT,"+COLUMN_FK_USER+" INTEGER,"
+            +COLUMN_FK_BUS+" INTEGER," +COLUMN_FK_ROUTE+" INTEGER," +COLUMN_FK_SCHEDULE+" INTEGER," +COLUMN_FK_PAYMENT+" INTEGER,"+COLUMN_FK_SEAT+"	INTEGER,"+COLUMN_SEAT_NUMBER+" INTEGER,"+COLUMN_STATUS+"	TEXT,"+COLUMN_ISCANCELLED+"	Boolean," +
             "FOREIGN KEY("+COLUMN_FK_PAYMENT+") REFERENCES "+TABLE_PAYMENT+"("+COLUMN_ID+"),FOREIGN KEY("+COLUMN_FK_USER+") REFERENCES "+TABLE_USER+
-            "("+COLUMN_ID+"),FOREIGN KEY("+COLUMN_FK_SEAT+") REFERENCES " +TABLE_BUS_SEAT+ " ("+COLUMN_ID+"))";
+            "("+COLUMN_ID+"),FOREIGN KEY("+COLUMN_FK_SEAT+") REFERENCES " +TABLE_BUS_SEAT+ " ("+COLUMN_ID+"), FOREIGN KEY("+ COLUMN_FK_ROUTE +") REFERENCES "+TABLE_BUS_STOP+" ("+COLUMN_ID+"), FOREIGN KEY("+ COLUMN_FK_BUS +") REFERENCES "+TABLE_BUS+" ("+COLUMN_ID+"), FOREIGN KEY("+ COLUMN_FK_SCHEDULE +") REFERENCES "+TABLE_BUS_SCHEDULE+" ("+COLUMN_ID+"))";
 
     //methods to use in order to connect to the Database
     public DatabaseHelper(Context context) {
@@ -307,6 +314,338 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 String name = ID+"-"+person.getString(person.getColumnIndex("FirstName"))+" "+
                         person.getString(person.getColumnIndex("LastName"));
                 list.add(name);
+            }
+        }
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        db.close();
+        return list;
+    }
+
+    public Cursor getBus(long busStopID){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor user = db.rawQuery("SELECT * FROM "+TABLE_BUS+" WHERE "+COLUMN_ID+" = "+busStopID, null);
+        if(user != null){ user.moveToFirst(); }
+        return user;
+    }
+    // List Tickets
+    public ArrayList<String> getListTicketsAvailable(long userID) {
+        ArrayList<String> list = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        db.beginTransaction();
+        Cursor cursor = db.rawQuery("SELECT * FROM "+TABLE_TICKET + " WHERE " + COLUMN_FK_USER + " = " + userID + " AND " + COLUMN_STATUS + " NOT 'WAITING' AND" + COLUMN_ISCANCELLED + " = 0", null);
+        if(cursor.getCount() > 0){
+            while(cursor.moveToNext()){
+                long busID = cursor.getLong(cursor.getColumnIndex(COLUMN_FK_BUS));
+//                String ID = String.valueOf(routeID);
+                Cursor user = getBus(busID);
+//                long personID = user.getLong(cursor.getColumnIndex(COLUMN_FK_PERSON));
+//                Cursor person = getPerson(personID);
+//                String name = ID+"-"+person.getString(person.getColumnIndex("FirstName"))+" "+
+//                        person.getString(person.getColumnIndex("LastName"));
+                String name = cursor.getString(user.getColumnIndex(COLUMN_PLATE_NUMBER));
+                list.add(name);
+            }
+        }
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        db.close();
+        return list;
+    }
+
+    public ArrayList<String> getListTicketsExpired(long userID) {
+        ArrayList<String> list = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        db.beginTransaction();
+        Cursor cursor = db.rawQuery("SELECT * FROM "+TABLE_TICKET + " WHERE " + COLUMN_FK_USER + " = " + userID + " AND " + COLUMN_STATUS + " = 'EXPIRED'" , null);
+        if(cursor.getCount() > 0){
+            while(cursor.moveToNext()){
+                long busID = cursor.getLong(cursor.getColumnIndex(COLUMN_FK_BUS));
+//                String ID = String.valueOf(routeID);
+                Cursor user = getBus(busID);
+//                long personID = user.getLong(cursor.getColumnIndex(COLUMN_FK_PERSON));
+//                Cursor person = getPerson(personID);
+//                String name = ID+"-"+person.getString(person.getColumnIndex("FirstName"))+" "+
+//                        person.getString(person.getColumnIndex("LastName"));
+                String name = cursor.getString(user.getColumnIndex(COLUMN_PLATE_NUMBER));
+                list.add(name);
+            }
+        }
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        db.close();
+        return list;
+    }
+
+    public ArrayList<String> getSchedules() {
+        ArrayList<String> list = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        db.beginTransaction();
+        Cursor cursor = db.rawQuery("SELECT * FROM "+ TABLE_BUS_SCHEDULE, null);
+        if(cursor.getCount() > 0){
+            while(cursor.moveToNext()){
+//                long busID = cursor.getLong(cursor.getColumnIndex(COLUMN_FK_BUS));
+//                String ID = String.valueOf(routeID);
+//                Cursor user = getBus(busID);
+//                long personID = user.getLong(cursor.getColumnIndex(COLUMN_FK_PERSON));
+//                Cursor person = getPerson(personID);
+//                String name = ID+"-"+person.getString(person.getColumnIndex("FirstName"))+" "+
+//                        person.getString(person.getColumnIndex("LastName"));
+                String name = cursor.getString(cursor.getColumnIndex(COLUMN_TIME));
+                list.add(name);
+            }
+        }
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        db.close();
+        return list;
+    }
+
+    public HashMap<String, Integer> getCountTicketDataWeek(long userID, int week) {
+        HashMap<String, Integer> list = new HashMap<>();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar today = Calendar.getInstance();
+        Calendar min = Calendar.getInstance(), max = Calendar.getInstance();
+        min.set(Calendar.WEEK_OF_YEAR, week + ((today.get(Calendar.MONTH) + 1) * 4));
+        min.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+        max.set(Calendar.WEEK_OF_YEAR, week + ((today.get(Calendar.MONTH) + 1) * 4));
+        max.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        db.beginTransaction();
+        String query = "SELECT " + TABLE_BUS_SCHEDULE + "." + COLUMN_TIME + " AS Time, COUNT(*) FROM " + TABLE_TICKET
+                + " LEFT JOIN " + TABLE_BUS_SCHEDULE + " ON " + TABLE_TICKET + "." + COLUMN_FK_SCHEDULE + " = " + TABLE_BUS_SCHEDULE + "." + COLUMN_ID
+                + " WHERE " + COLUMN_FK_USER + " = " + userID
+                + " AND " + COLUMN_ISCANCELLED + " = 0"
+                + " AND " + COLUMN_DATE + " BETWEEN " + sdf.format(min.getTime())
+                + " AND " + sdf.format(max.getTime())
+                + "GROUP BY Time";
+        Cursor cursor = db.rawQuery(query, null);
+        if(cursor.getCount() > 0){
+            while(cursor.moveToNext()){
+                Integer name = cursor.getInt(0);
+                Integer value = cursor.getInt(1);
+                list.put(name.toString(), value);
+            }
+        }
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        db.close();
+        return list;
+    }
+
+    public HashMap<String, Integer> getCountTicketDataWeekCancelled(long userID, int week) {
+        HashMap<String, Integer> list = new HashMap<>();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar today = Calendar.getInstance();
+        Calendar min = Calendar.getInstance(), max = Calendar.getInstance();
+        min.set(Calendar.WEEK_OF_YEAR, week + ((today.get(Calendar.MONTH) + 1) * 4));
+        min.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+        max.set(Calendar.WEEK_OF_YEAR, week + ((today.get(Calendar.MONTH) + 1) * 4));
+        max.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        db.beginTransaction();
+        String query = "SELECT " + TABLE_BUS_SCHEDULE + "." + COLUMN_TIME + " AS Time, COUNT(*) FROM " + TABLE_TICKET
+                + " LEFT JOIN " + TABLE_BUS_SCHEDULE + " ON " + TABLE_TICKET + "." + COLUMN_FK_SCHEDULE + " = " + TABLE_BUS_SCHEDULE + "." + COLUMN_ID
+                + " WHERE " + COLUMN_FK_USER + " = " + userID
+                + " AND " + COLUMN_ISCANCELLED + " = 1"
+                + " AND " + COLUMN_DATE + " BETWEEN " + sdf.format(min.getTime())
+                + " AND " + sdf.format(max.getTime())
+                + "GROUP BY Time";
+        Cursor cursor = db.rawQuery(query, null);
+        if(cursor.getCount() > 0){
+            while(cursor.moveToNext()){
+                Integer name = cursor.getInt(0);
+                Integer value = cursor.getInt(1);
+                list.put(name.toString(), value);
+            }
+        }
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        db.close();
+        return list;
+    }
+
+    public HashMap<String, Integer> getCountTicketDataMonth(long userID, int month) {
+        HashMap<String, Integer> list = new HashMap<>();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar today = Calendar.getInstance();
+        int year = today.get(Calendar.YEAR);
+        Calendar min = Calendar.getInstance(), max = Calendar.getInstance();
+        min.set(Calendar.WEEK_OF_YEAR, 1 + ((month) * 4));
+        min.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+        if (((year % 4 == 0) && (year % 100!= 0)) || (year%400 == 0))
+            max.set(Calendar.WEEK_OF_YEAR, 5 + ((month) * 4));
+        else
+            max.set(Calendar.WEEK_OF_YEAR, 4 + ((month) * 4));
+        max.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        db.beginTransaction();
+        String query = "SELECT " + TABLE_BUS_SCHEDULE + "." + COLUMN_TIME + " AS Time, COUNT(*) FROM " + TABLE_TICKET
+                + " LEFT JOIN " + TABLE_BUS_SCHEDULE + " ON " + TABLE_TICKET + "." + COLUMN_FK_SCHEDULE + " = " + TABLE_BUS_SCHEDULE + "." + COLUMN_ID
+                + " WHERE " + COLUMN_FK_USER + " = " + userID
+                + " AND " + COLUMN_ISCANCELLED + " = 0"
+                + " AND " + COLUMN_DATE + " BETWEEN " + sdf.format(min.getTime())
+                + " AND " + sdf.format(max.getTime())
+                + "GROUP BY Time";
+        Cursor cursor = db.rawQuery(query, null);
+        if(cursor.getCount() > 0){
+            while(cursor.moveToNext()){
+                Integer name = cursor.getInt(0);
+                Integer value = cursor.getInt(1);
+                list.put(name.toString(), value);
+            }
+        }
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        db.close();
+        return list;
+    }
+
+    public HashMap<String, Integer> getCountTicketDataMonthCancelled(long userID, int month) {
+        HashMap<String, Integer> list = new HashMap<>();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar today = Calendar.getInstance();
+        int year = today.get(Calendar.YEAR);
+        Calendar min = Calendar.getInstance(), max = Calendar.getInstance();
+        min.set(Calendar.WEEK_OF_YEAR, 1 + ((month) * 4));
+        min.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+        if (((year % 4 == 0) && (year % 100!= 0)) || (year%400 == 0))
+            max.set(Calendar.WEEK_OF_YEAR, 5 + ((month) * 4));
+        else
+            max.set(Calendar.WEEK_OF_YEAR, 4 + ((month) * 4));
+        max.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        db.beginTransaction();
+        String query = "SELECT " + TABLE_BUS_SCHEDULE + "." + COLUMN_TIME + " AS Time, COUNT(*) FROM " + TABLE_TICKET
+                + " LEFT JOIN " + TABLE_BUS_SCHEDULE + " ON " + TABLE_TICKET + "." + COLUMN_FK_SCHEDULE + " = " + TABLE_BUS_SCHEDULE + "." + COLUMN_ID
+                + " WHERE " + COLUMN_FK_USER + " = " + userID
+                + " AND " + COLUMN_ISCANCELLED + " = 1"
+                + " AND " + COLUMN_DATE + " BETWEEN " + sdf.format(min.getTime())
+                + " AND " + sdf.format(max.getTime())
+                + "GROUP BY Time";
+        Cursor cursor = db.rawQuery(query, null);
+        if(cursor.getCount() > 0){
+            while(cursor.moveToNext()){
+                Integer name = cursor.getInt(0);
+                Integer value = cursor.getInt(1);
+                list.put(name.toString(), value);
+            }
+        }
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        db.close();
+        return list;
+    }
+
+    public HashMap<String,Integer> getCountTicketSeatNumberWeek(long userID, int week) {
+        HashMap<String, Integer> list = new HashMap<>();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar today = Calendar.getInstance();
+        Calendar min = Calendar.getInstance(), max = Calendar.getInstance();
+        min.set(Calendar.WEEK_OF_YEAR, week + ((today.get(Calendar.MONTH) + 1) * 4));
+        min.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+        max.set(Calendar.WEEK_OF_YEAR, week + ((today.get(Calendar.MONTH) + 1) * 4));
+        max.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        db.beginTransaction();
+        String query = "SELECT " + TABLE_BUS_SEAT + "." + COLUMN_SEAT_NUMBER + " AS Seat, COUNT(*) FROM " + TABLE_TICKET
+                + " LEFT JOIN " + TABLE_BUS_SEAT + " ON " + TABLE_TICKET + "." + COLUMN_FK_SEAT + " = " + TABLE_BUS_SEAT + "." + COLUMN_ID
+                + " WHERE " + COLUMN_FK_USER + " = " + userID
+                + " AND " + COLUMN_ISCANCELLED + " = 0"
+                + " AND " + COLUMN_DATE + " BETWEEN " + sdf.format(min.getTime())
+                + " AND " + sdf.format(max.getTime())
+                + "GROUP BY Seat";
+        Cursor cursor = db.rawQuery(query, null);
+        if(cursor.getCount() > 0){
+            while(cursor.moveToNext()){
+                String seat = cursor.getString(0);
+                Integer count = cursor.getInt(1);
+                list.put(seat, count);
+            }
+        }
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        db.close();
+        return list;
+    }
+
+    public HashMap<String,Integer> getCountTicketSeatNumberMonth(long userID, int month) {
+        HashMap<String, Integer> list = new HashMap<>();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar today = Calendar.getInstance();
+        int year = today.get(Calendar.YEAR);
+        Calendar min = Calendar.getInstance(), max = Calendar.getInstance();
+        min.set(Calendar.WEEK_OF_YEAR, 1 + ((month) * 4));
+        min.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+        if (((year % 4 == 0) && (year % 100!= 0)) || (year%400 == 0))
+            max.set(Calendar.WEEK_OF_YEAR, 5 + ((month) * 4));
+        else
+            max.set(Calendar.WEEK_OF_YEAR, 4 + ((month) * 4));
+        max.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        db.beginTransaction();
+        String query = "SELECT " + TABLE_BUS_SEAT + "." + COLUMN_SEAT_NUMBER + " AS Seat, COUNT(*) FROM " + TABLE_TICKET
+                + " LEFT JOIN " + TABLE_BUS_SEAT + " ON " + TABLE_TICKET + "." + COLUMN_FK_SEAT + " = " + TABLE_BUS_SEAT + "." + COLUMN_ID
+                + " WHERE " + COLUMN_FK_USER + " = " + userID
+                + " AND " + COLUMN_ISCANCELLED + " = 0"
+                + " AND " + COLUMN_DATE + " BETWEEN " + sdf.format(min.getTime())
+                                        + " AND " + sdf.format(max.getTime())
+                + "GROUP BY Seat";
+        Cursor cursor = db.rawQuery(query, null);
+        if(cursor.getCount() > 0){
+            while(cursor.moveToNext()){
+                String seat = cursor.getString(0);
+                Integer count = cursor.getInt(1);
+                list.put(seat, count);
+            }
+        }
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        db.close();
+        return list;
+    }
+
+    public ArrayList<String> getTicketDetails(long userID, long ticketID) {
+        ArrayList<String> list = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        db.beginTransaction();
+        String query = "SELECT ID, "
+                + TABLE_BUS_SEAT + "." + COLUMN_SEAT_NUMBER + " AS Seat, "
+                + TABLE_BUS_SCHEDULE + "." + COLUMN_TIME + " AS Time, "
+                + TABLE_BUS_STOP + "." + COLUMN_DESTINATION + " AS Destination FROM " + TABLE_TICKET
+                + " LEFT JOIN " + TABLE_BUS_SEAT + " ON " + TABLE_TICKET + "." + COLUMN_FK_SEAT + " = " + TABLE_BUS_SEAT + "." + COLUMN_ID
+                + " LEFT JOIN " + TABLE_BUS_SCHEDULE + " ON " + TABLE_TICKET + "." + COLUMN_FK_SCHEDULE + " = " + TABLE_BUS_SCHEDULE + "." + COLUMN_ID
+                + " LEFT JOIN " + TABLE_BUS_STOP + " ON " + TABLE_TICKET + "." + COLUMN_FK_ROUTE + " = " + TABLE_BUS_STOP + "." + COLUMN_ID
+                + " WHERE " + COLUMN_FK_USER + " = " + userID
+                + " AND " + COLUMN_ID + " = " + ticketID;
+        Cursor cursor = db.rawQuery(query, null);
+        if(cursor.getCount() > 0){
+            while(cursor.moveToNext()){
+                Integer id = cursor.getInt(0);
+                Integer seat = cursor.getInt(1);
+                Integer sched = cursor.getInt(2);
+                String stop = cursor.getString(3);
+                list.add(id.toString());
+                list.add(seat.toString());
+                list.add(sched.toString());
+                list.add(stop);
+                list.add("#" + stop + "$#$" + seat + "#");
             }
         }
         db.setTransactionSuccessful();
