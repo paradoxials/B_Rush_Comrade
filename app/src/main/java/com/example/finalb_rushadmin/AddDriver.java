@@ -22,8 +22,8 @@ import java.util.Calendar;
 public class AddDriver extends AppCompatActivity {
     private DatabaseHelper databaseHelper;
     private Button btnAddDriver;
-   // private EditText fname, mname, lname, add, bday, num;
-    private TextInputEditText fname, mname, lname, add, bday, num;
+    private EditText fname, mname, lname, add, bday, num;
+   // private TextInputEditText fname, mname, lname, add, bday, num;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,12 +31,12 @@ public class AddDriver extends AppCompatActivity {
         setContentView(R.layout.activity_add_driver);
         databaseHelper = new DatabaseHelper(this);
         //get the values
-        fname = (TextInputEditText) findViewById(R.id.driverFName);
-        mname = (TextInputEditText) findViewById(R.id.driverMName);
-        lname = (TextInputEditText) findViewById(R.id.driverLName);
-        add = (TextInputEditText) findViewById(R.id.driverAddress);
-        bday = (TextInputEditText) findViewById(R.id.driverBday);
-        num = (TextInputEditText) findViewById(R.id.driverContactNum);
+        fname = (EditText) findViewById(R.id.driverFName);
+        mname = (EditText) findViewById(R.id.driverMName);
+        lname = (EditText) findViewById(R.id.driverLName);
+        add = (EditText) findViewById(R.id.driverAddress);
+        bday = (EditText) findViewById(R.id.driverBday);
+        num = (EditText) findViewById(R.id.driverContactNum);
         Calendar calendar = Calendar.getInstance();
         final int year = calendar.get(Calendar.YEAR);
         final int month = calendar.get(Calendar.MONTH);
@@ -63,7 +63,10 @@ public class AddDriver extends AppCompatActivity {
     }
     private boolean validFirstName(){
         String value = fname.getText().toString();
-        if(value.isEmpty()){ fname.setError("Field cannot be empty"); return false; }
+        if(value.isEmpty()){
+            fname.setError("Field cannot be empty");
+            fname.requestFocus();
+            return false; }
         else{
             fname.setError(null);
             return true;
@@ -71,7 +74,7 @@ public class AddDriver extends AppCompatActivity {
     }
     private boolean validLastName(){
         String value = lname.getText().toString();
-        if(value.isEmpty()){ lname.setError("Field cannot be empty"); return false; }
+        if(value.isEmpty()){ lname.setError("Field cannot be empty"); lname.requestFocus(); return false; }
         else{
             lname.setError(null);
             return true;
@@ -79,7 +82,7 @@ public class AddDriver extends AppCompatActivity {
     }
     private boolean validAddress(){
         String value = add.getText().toString();
-        if(value.isEmpty()){ add.setError("Field cannot be empty"); return false; }
+        if(value.isEmpty()){ add.setError("Field cannot be empty"); add.requestFocus(); return false; }
         else{
             add.setError(null);
             return true;
@@ -87,7 +90,7 @@ public class AddDriver extends AppCompatActivity {
     }
     private boolean validBday(){
         String value = bday.getText().toString();
-        if(value.isEmpty()){ bday.setError("Field cannot be empty"); return false; }
+        if(value.isEmpty()){ bday.setError("Field cannot be empty"); bday.requestFocus(); return false; }
         else{
             bday.setError(null);
             return true;
@@ -96,8 +99,8 @@ public class AddDriver extends AppCompatActivity {
     private boolean validContactNum(){
         String value = num.getText().toString();
         boolean flag = true;
-        if(value.isEmpty()){ num.setError("Field cannot be empty"); flag = false; }
-        else if(value.length() < 11){ num.setError("Please input 11 numbers"); flag = false; }
+        if(value.isEmpty()){ num.setError("Field cannot be empty"); num.requestFocus(); flag = false; }
+        else if(value.length() < 11){ num.setError("Please input 11 numbers"); num.requestFocus(); flag = false; }
         else{ num.setError(null); flag = true; }
         return flag;
     }

@@ -7,14 +7,21 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.android.material.navigation.NavigationView;
 
 public class NavDashboard extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     private DrawerLayout drawer;
-
+//    private Button nav_logout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +45,6 @@ public class NavDashboard extends AppCompatActivity implements NavigationView.On
                     new AdminDashboardFragment()).commit();
             navigationView.setCheckedItem(R.id.nav_dashboard);
         }
-
     }
 
     @Override
@@ -76,6 +82,5 @@ public class NavDashboard extends AppCompatActivity implements NavigationView.On
         {
             super.onBackPressed();
         }
-
     }
 }

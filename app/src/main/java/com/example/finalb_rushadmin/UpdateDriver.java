@@ -111,7 +111,12 @@ public class UpdateDriver extends AppCompatActivity {
                 String id = String.valueOf(personID);
                 boolean isUpdated = databaseHelper.updateDriver(id, fname.getText().toString(), mname.getText().toString(), lname.getText().toString(),
                         add.getText().toString(), bday.getText().toString(), contact.getText().toString());
-                if(isUpdated){ Toast.makeText(UpdateDriver.this, "Data has been updated", Toast.LENGTH_SHORT).show();}
+                if(isUpdated){ //Toast.makeText(UpdateDriver.this, "Data has been updated", Toast.LENGTH_SHORT).show();
+                    DriverFragment driverFragment = new DriverFragment();
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.add(R.id.layout, driverFragment).addToBackStack(null).commit();
+                }
                 else{ Toast.makeText(UpdateDriver.this, "Failed to update date", Toast.LENGTH_SHORT).show(); }
             }
         });

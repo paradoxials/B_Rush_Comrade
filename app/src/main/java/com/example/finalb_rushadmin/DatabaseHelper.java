@@ -15,7 +15,7 @@ import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "B-rushDatabase.db";
-    private static int DB_VERSION = 5;
+    private static int DB_VERSION = 6;
 
     //list of tables in B-rush database
     private static final String TABLE_PERSON = "Person";
@@ -38,12 +38,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_FK_USER = "UserID";
     private static final String COLUMN_FK_PAYMENT = "PaymentID";
     private static final String COLUMN_FK_BUS = "BusID";
+
     private static final String COLUMN_FK_SCHEDULE = "ScheduleID";
+
 
     //list of common columns for all table
     private static final String COLUMN_ID = "ID";
     private static final String COLUMN_ADDRESS = "Address";
-
 
     //column list of Person table
     private static final String COLUMN_FNAME = "FirstName";
@@ -96,9 +97,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             "	INTEGER ,"+COLUMN_FK_ROUTE+" INTEGER, "+COLUMN_PLATE_NUMBER+" TEXT , FOREIGN KEY("+COLUMN_FK_ROUTE+") REFERENCES "+TABLE_BUS_STOP+
             "("+COLUMN_ID+") , FOREIGN KEY("+COLUMN_FK_DRIVER+") REFERENCES "+TABLE_DRIVER+"("+COLUMN_ID+"))";
     public static final String CREATE_TABLE_BUS_SCHEDULE =" CREATE TABLE "+TABLE_BUS_SCHEDULE+ "( "+COLUMN_ID+" INTEGER PRIMARY KEY AUTOINCREMENT,"
-            +COLUMN_TIME+" INTEGER, "+COLUMN_FK_ROUTE+" INTEGER ,FOREIGN KEY("+COLUMN_FK_ROUTE+" )REFERENCES "+TABLE_BUS_STOP+"("+COLUMN_ID+"))";
+            +COLUMN_TIME+" INTEGER, "+COLUMN_FK_BUS+" INTEGER ,FOREIGN KEY("+COLUMN_FK_BUS+" )REFERENCES "+TABLE_BUS+"("+COLUMN_ID+"))";
     public static final String CREATE_TABLE_BUS_SEAT="CREATE TABLE "+TABLE_BUS_SEAT+"("+COLUMN_ID+" INTEGER PRIMARY KEY AUTOINCREMENT,"+COLUMN_SEAT_NUMBER+
-            "INTEGER,"+COLUMN_STATUS+"TEXT)";
+            "INTEGER,"+COLUMN_STATUS+" TEXT)";
     public static final String CREATE_TABLE_BUS_STOP = "CREATE TABLE "+TABLE_BUS_STOP+"("+COLUMN_ID+" INTEGER PRIMARY KEY AUTOINCREMENT,"
             +COLUMN_DESTINATION+" TEXT)";
     public static final String CREATE_TABLE_GCASH = "CREATE TABLE "+TABLE_GCASH+" ("+COLUMN_ID+"	INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -195,18 +196,31 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         long res = db.insert(TABLE_BUS_STOP, null, contentValues);
         return res;
     }
-//    public boolean insertBus(long driverID, String destination, String plateNumber){
-//        long routeID = insertBusStop(destination);
-//        if(routeID == -1){ return false; }
-//        else{
-//            SQLiteDatabase db = this.getWritableDatabase();
-//            ContentValues values = new ContentValues();
-//            values.put(COLUMN_FK_DRIVER, driverID);
-//            values.put(COLUMN_FK_ROUTE, routeID);
-//            values.put(COLUMN_PLATE_NUMBER, plateNumber);
-//
-//        }
-//    }
+    private long insertBus(long driverID, String destination, String plateNumber){
+        long routeID = insertBusStop(destination);
+        if(routeID == -1){ return -1; }
+        else{
+            SQLiteDatabase db = this.getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put(COLUMN_FK_DRIVER, driverID);
+            values.put(COLUMN_FK_ROUTE, routeID);
+            values.put(COLUMN_PLATE_NUMBER, plateNumber);
+            long res = db.insert(TABLE_BUS, null, values);
+            return res;
+        }
+    }
+    public boolean insertBusSchedule(long driverID, String destination, String plateNumber, String time){
+        long busID = insertBus(driverID,destination,plateNumber);
+        if(busID == -1){ return false; }
+        else{
+            SQLiteDatabase db = this.getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put(COLUMN_TIME, time);
+            values.put(COLUMN_FK_BUS, busID);
+            long res = db.insert(TABLE_BUS_SCHEDULE, null, values);
+            return true;
+        }
+    }
     //returns all rows in the table
     public Cursor getListDrivers(){
         SQLiteDatabase db = this.getWritableDatabase();
@@ -216,6 +230,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public Cursor getListUsers(){
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("SELECT * FROM "+TABLE_USER, null);
+        return res;
+    }
+    public Cursor getListBusSched(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT * FROM "+TABLE_BUS_SCHEDULE, null);
         return res;
     }
     //returns a specific row in the database
@@ -236,6 +255,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor user = db.rawQuery("SELECT * FROM "+TABLE_USER+" WHERE "+COLUMN_ID+" = "+userID, null);
         if(user != null){ user.moveToFirst(); }
         return user;
+    }
+    public Cursor getBus(long busID){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor bus = db.rawQuery("SELECT * FROM "+TABLE_BUS+" WHERE ID = "+busID, null);
+        if(bus != null){ bus.moveToFirst(); }
+        return bus;
+    }
+    public Cursor getRoute(long routeID){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor route = db.rawQuery("SELECT * FROM "+TABLE_BUS_STOP+" WHERE ID = "+routeID, null);
+        if(route != null){ route.moveToFirst(); }
+        return route;
+    }
+    public Cursor getBusSched(long schedID){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor sched = db.rawQuery("SELECT * FROM "+TABLE_BUS_SCHEDULE+" WHERE ID = "+schedID, null);
+        if(sched != null){ sched.moveToFirst(); }
+        return sched;
+    }
+    public Cursor getAdmin(String username, String password){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor admin = db.rawQuery("SELECT * FROM "+TABLE_ADMIN+" WHERE Username = ? AND Password = ?", new String[]{ username, password });
+        if(admin != null){ admin.moveToFirst(); }
+        return admin;
     }
     //updates a specific row in the database
     private boolean updatePerson(String personID, String fname, String mname, String lname, String add, String bday, String num){
@@ -293,6 +336,38 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         else { return false; }
     }
+    private boolean deleteDestination(String routeID){
+        SQLiteDatabase db = this.getWritableDatabase();
+        long res = db.delete(TABLE_BUS_STOP, "ID = ?", new String[] { routeID });
+        if(res == -1){ return false; }
+        else{ return true; }
+    }
+    private boolean deleteBus(String busID){
+        SQLiteDatabase db = this.getWritableDatabase();
+        long bus_id = Long.parseLong(busID);
+        Cursor cursor = getBus(bus_id);
+        long tempID = cursor.getLong(cursor.getColumnIndex("RouteID"));
+        String routeID = String.valueOf(tempID);
+        boolean flag = deleteDestination(routeID);
+        if(flag){
+            db.delete(TABLE_BUS, "ID = ?", new String[]{ busID });
+            return true;
+        }
+        else{ return false; }
+    }
+    public boolean deleteBusSched(String ID){
+        SQLiteDatabase db = this.getWritableDatabase();
+        long schedID = Long.parseLong(ID);
+        Cursor cursor = getBusSched(schedID);
+        long tempID = cursor.getLong(cursor.getColumnIndex("BusID"));
+        String busID = String.valueOf(tempID);
+        boolean flag = deleteBus(busID);
+        if(flag){
+            db.delete(TABLE_BUS_SCHEDULE, "ID = ?", new String[]{ ID });
+            return true;
+        }
+        else{ return false; }
+    }
     //checks admin login
     public boolean adminAccountExists(String username, String password){
         SQLiteDatabase db = this.getReadableDatabase();
@@ -321,7 +396,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
         return list;
     }
-
     public Cursor getBus(long busStopID){
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor user = db.rawQuery("SELECT * FROM "+TABLE_BUS+" WHERE "+COLUMN_ID+" = "+busStopID, null);
@@ -652,5 +726,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.endTransaction();
         db.close();
         return list;
+
+    public Cursor LoginGcash() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("select * from "+TABLE_GCASH,null);
+        if(res!= null){res.moveToFirst();}
+        return res;
+    }
+    public boolean insertGcashRef(String Ref) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COLUMN_REFERENCE_NUMBER, Ref);
+        long result = db.insert(TABLE_GCASH,null ,contentValues);
+        if(result == -1)
+            return false;
+        else
+            return true;
+        //aaa
+
     }
 }

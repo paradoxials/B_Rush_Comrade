@@ -7,6 +7,7 @@
     <color name="primary_orange">#EC7823</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
     <color name="grey">#EBEBEB</color>
 
     <!-- Secondary Colors -->
@@ -14,4 +15,8 @@
     <color name="secondary_yellow_700">#AA8F0B</color>
     <color name="secondary_red_200">#781B1B</color>
     <color name="secondary_red_700">#610A0C</color>
+
+    <color name="orange">#EC7823</color>
+    <color name="red">#741E1E</color>
+
 </resources>

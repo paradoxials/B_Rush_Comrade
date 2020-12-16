@@ -1,13 +1,17 @@
 package com.example.finalb_rushadmin;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -16,6 +20,7 @@ public class AddRoute extends AppCompatActivity {
     private DatabaseHelper databaseHelper;
     private String time, driver, bus_number;
     private EditText destination;
+    private Button btnAdd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +29,7 @@ public class AddRoute extends AppCompatActivity {
         databaseHelper = new DatabaseHelper(this);
 
         destination = (EditText) findViewById(R.id.getDestination);
+        btnAdd = (Button) findViewById(R.id.addRoute);
 
         //static spinner
         spinnerTime = findViewById(R.id.getTime);
@@ -47,8 +53,26 @@ public class AddRoute extends AppCompatActivity {
         spinnerDriver.setAdapter(adapterD);
         getDriverValue();
 
+        insertRoute();
     }
 
+    private void insertRoute(){
+        btnAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                long driverID = Long.parseLong(driver);
+                boolean isInserted = databaseHelper.insertBusSchedule(driverID, destination.getText().toString(),
+                        bus_number, time);
+                if(isInserted){
+                    RouteFragment routeFragment = new RouteFragment();
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.add(R.id.layout, routeFragment).addToBackStack(null).commit();
+                }
+                else{ Toast.makeText(AddRoute.this, "Failed to insert data", Toast.LENGTH_SHORT).show(); }
+            }
+        });
+    }
     private void getSpinnerTimeValue(){
         spinnerTime.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
