@@ -192,7 +192,7 @@ public class TicketFragment extends Fragment {
         linearLayoutExTickets = root.findViewById(R.id.linearLayoutExpiredTicket);
 
         DatabaseHelper databaseHelper = new DatabaseHelper(this.getContext());
-        ArrayList<String> arrayList = databaseHelper.getListTicketsAvailable(1);
+        ArrayList<String> arrayList = databaseHelper.getListTicketsExpired(1);
 
         for (int i = 0; i <= arrayList.size(); i++) {
             View wizardView = getLayoutInflater().inflate(R.layout.layout_ticket_button, linearLayoutNewTickets, false);
