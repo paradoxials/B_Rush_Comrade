@@ -41,16 +41,6 @@
             android:textColor="@color/white"
             android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/TicketTime"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:letterSpacing="0.2"
-            android:text="X:XX XX"
-            android:textAllCaps="true"
-            android:textColor="@color/white"
-            android:textSize="10sp"
-            android:textStyle="bold" />
     </LinearLayout>
 
     <ImageView
