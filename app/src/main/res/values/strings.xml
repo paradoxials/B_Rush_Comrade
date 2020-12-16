@@ -15,6 +15,7 @@
     <string name="closeNavDrawer">Navigation Drawer Close</string>
     <string name="dashboard">Dashboard</string>
     <string name="book_bus">Book Bus</string>
+    <string name ="google_maps_key">Google Maps Key</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="title_activity_map">Map</string>
 

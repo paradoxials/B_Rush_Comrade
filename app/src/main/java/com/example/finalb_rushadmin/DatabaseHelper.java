@@ -396,6 +396,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
         return list;
     }
+
+
+//    public Cursor getBus(long busStopID){
+//        SQLiteDatabase db = this.getWritableDatabase();
+//        Cursor user = db.rawQuery("SELECT * FROM "+TABLE_BUS+" WHERE "+COLUMN_ID+" = "+busStopID, null);
+//        if(user != null){ user.moveToFirst(); }
+//        return user;
+//    }
+    public Cursor LoginGcash() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("select * from "+TABLE_GCASH,null);
+        if(res!= null){res.moveToFirst();}
+        return res;
+    }
+    public boolean insertGcashRef(String Ref) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COLUMN_REFERENCE_NUMBER, Ref);
+        long result = db.insert(TABLE_GCASH,null ,contentValues);
+        if(result == -1)
+            return false;
+        else
+            return true;
+        //aaa
+    }
+//////////////////////////////////////Additional from ALbrecht starts Here///////////////////////////////////////////
+
     // List Tickets
     public ArrayList<String> getListTicketsAvailable(long userID) {
         ArrayList<String> list = new ArrayList<>();
@@ -703,24 +730,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.endTransaction();
         db.close();
         return list;
-    }
+        }
+    //////////////////////////////////////Additional from ALbrecht ends Here///////////////////////////////////////////
+//    public Cursor LoginGcash() {
+//        SQLiteDatabase db = this.getWritableDatabase();
+//        Cursor res = db.rawQuery("select * from "+TABLE_GCASH,null);
+//        if(res!= null){res.moveToFirst();}
+//        return res;
+//    }
+//    public boolean insertGcashRef(String Ref) {
+//        SQLiteDatabase db = this.getWritableDatabase();
+//        ContentValues contentValues = new ContentValues();
+//        contentValues.put(COLUMN_REFERENCE_NUMBER, Ref);
+//        long result = db.insert(TABLE_GCASH,null ,contentValues);
+//        if(result == -1)
+//            return false;
+//        else
+//            return true;
+//        //aaa
+//
+//    }
 
-    public Cursor LoginGcash() {
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("select * from "+TABLE_GCASH,null);
-        if(res!= null){res.moveToFirst();}
-        return res;
-    }
-    public boolean insertGcashRef(String Ref) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(COLUMN_REFERENCE_NUMBER, Ref);
-        long result = db.insert(TABLE_GCASH,null ,contentValues);
-        if(result == -1)
-            return false;
-        else
-            return true;
-        //aaa
-
-    }
 }
