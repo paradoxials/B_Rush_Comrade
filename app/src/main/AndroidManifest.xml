@@ -10,11 +10,23 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FinalBrushAdmin">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
+     
         <activity android:name=".Gcash4"></activity>
         <activity android:name=".Gcash3" />
         <activity android:name=".Gcash2" />
         <activity android:name=".Gcash1" />
         <activity android:name=".seatSelection" />
+
+        <activity
+            android:name=".activities.Location.MapActivity"
+            android:label="@string/title_activity_map"></activity>
+        <activity android:name=".activities.TicketDetail.TicketDetailActivity" />
+        <activity android:name=".activities.Home.HomeActivity" />
         <activity
             android:name=".AddUser2"
             android:theme="@style/Theme.FinalBrushAdmin.NoActionBar" />
