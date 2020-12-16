@@ -1,6 +1,8 @@
 package com.example.finalb_rushadmin;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
@@ -38,7 +40,12 @@ public class DeleteUser extends AppCompatActivity {
                 boolean accountExists = databaseHelper.adminAccountExists(username.getText().toString(), password.getText().toString());
                 if(accountExists){
                     boolean isDeleted = databaseHelper.deleteUser(userID);
-                    if(isDeleted){ String str = "User has been deleted"; showMessage(str);}
+                    if(isDeleted){
+                        UserFragment userFragment = new UserFragment();
+                        FragmentManager fragmentManager = getSupportFragmentManager();
+                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                        fragmentTransaction.add(R.id.layout, userFragment).addToBackStack(null).commit();
+                    }
                     else{ String str = "Failed to delete user"; showMessage(str); }
                 }
                 else {String str = "Account does not exists"; showMessage(str);}
