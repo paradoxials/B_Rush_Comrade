@@ -396,6 +396,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
         return list;
     }
+
+
 //    public Cursor getBus(long busStopID){
 //        SQLiteDatabase db = this.getWritableDatabase();
 //        Cursor user = db.rawQuery("SELECT * FROM "+TABLE_BUS+" WHERE "+COLUMN_ID+" = "+busStopID, null);
@@ -420,6 +422,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         //aaa
     }
 //////////////////////////////////////Additional from ALbrecht starts Here///////////////////////////////////////////
+
     // List Tickets
     public ArrayList<String> getListTicketsAvailable(long userID) {
         ArrayList<String> list = new ArrayList<>();
@@ -430,12 +433,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if(cursor.getCount() > 0){
             while(cursor.moveToNext()){
                 long busID = cursor.getLong(cursor.getColumnIndex(COLUMN_FK_BUS));
-//                String ID = String.valueOf(routeID);
                 Cursor user = getBus(busID);
-//                long personID = user.getLong(cursor.getColumnIndex(COLUMN_FK_PERSON));
-//                Cursor person = getPerson(personID);
-//                String name = ID+"-"+person.getString(person.getColumnIndex("FirstName"))+" "+
-//                        person.getString(person.getColumnIndex("LastName"));
                 String name = cursor.getString(user.getColumnIndex(COLUMN_PLATE_NUMBER));
                 list.add(name);
             }
@@ -455,12 +453,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if(cursor.getCount() > 0){
             while(cursor.moveToNext()){
                 long busID = cursor.getLong(cursor.getColumnIndex(COLUMN_FK_BUS));
-//                String ID = String.valueOf(routeID);
                 Cursor user = getBus(busID);
-//                long personID = user.getLong(cursor.getColumnIndex(COLUMN_FK_PERSON));
-//                Cursor person = getPerson(personID);
-//                String name = ID+"-"+person.getString(person.getColumnIndex("FirstName"))+" "+
-//                        person.getString(person.getColumnIndex("LastName"));
                 String name = cursor.getString(user.getColumnIndex(COLUMN_PLATE_NUMBER));
                 list.add(name);
             }
@@ -479,13 +472,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery("SELECT * FROM "+ TABLE_BUS_SCHEDULE, null);
         if(cursor.getCount() > 0){
             while(cursor.moveToNext()){
-//                long busID = cursor.getLong(cursor.getColumnIndex(COLUMN_FK_BUS));
-//                String ID = String.valueOf(routeID);
-//                Cursor user = getBus(busID);
-//                long personID = user.getLong(cursor.getColumnIndex(COLUMN_FK_PERSON));
-//                Cursor person = getPerson(personID);
-//                String name = ID+"-"+person.getString(person.getColumnIndex("FirstName"))+" "+
-//                        person.getString(person.getColumnIndex("LastName"));
                 String name = cursor.getString(cursor.getColumnIndex(COLUMN_TIME));
                 list.add(name);
             }
@@ -764,4 +750,5 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 //        //aaa
 //
 //    }
+
 }
